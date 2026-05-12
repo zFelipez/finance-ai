@@ -1,8 +1,18 @@
 import { Button } from "@/_components/ui/button";
+import { SignInButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { LogInIcon } from "lucide-react";
+import { redirect } from "next/navigation";
 import Image from "next/image";
 
 export default function LoginPage() {
+ 
+  const {userId} = auth();
+
+  if(userId) {
+    redirect("/");
+  }
+
   return (
     <div className="grid h-full grid-cols-2 bg-black">
       <div className="mx-auto flex h-full w-full max-w-[500px] flex-col justify-center p-8">
@@ -21,7 +31,8 @@ export default function LoginPage() {
           utiliza iA para monitorar e otimizar suas finanças de forma
           inteligente, facilitando controle de seu orçamento.
         </p>
-
+ 
+      <SignInButton>
         <Button
           variant="outline"
           className="mt-4 bg-white  hover:text-white"
@@ -29,6 +40,8 @@ export default function LoginPage() {
           <LogInIcon></LogInIcon>
           Fazer login ou criar uma conta
         </Button>
+
+      </SignInButton>
       </div>
       <div className="relative h-full w-full">
         <Image
