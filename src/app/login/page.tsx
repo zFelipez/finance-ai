@@ -5,11 +5,10 @@ import { LogInIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 
-export default function LoginPage() {
- 
-  const {userId} = auth();
+export default async function LoginPage() {
+  const { userId } = await auth();
 
-  if(userId) {
+  if (userId) {
     redirect("/");
   }
 
@@ -31,17 +30,13 @@ export default function LoginPage() {
           utiliza iA para monitorar e otimizar suas finanças de forma
           inteligente, facilitando controle de seu orçamento.
         </p>
- 
-      <SignInButton>
-        <Button
-          variant="outline"
-          className="mt-4 bg-white  hover:text-white"
-        >
-          <LogInIcon></LogInIcon>
-          Fazer login ou criar uma conta
-        </Button>
 
-      </SignInButton>
+        <SignInButton>
+          <Button variant="outline" className="mt-4 bg-white hover:text-white">
+            <LogInIcon></LogInIcon>
+            Fazer login ou criar uma conta
+          </Button>
+        </SignInButton>
       </div>
       <div className="relative h-full w-full">
         <Image
