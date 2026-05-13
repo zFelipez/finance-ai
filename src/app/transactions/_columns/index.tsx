@@ -4,17 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { TrancationTypeBadge } from "../_components/type-badge";
 import { Transaction } from "@prisma/client";
-
-const currencyFormatter = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
-
-const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
-  day: "2-digit",
-  month: "short",
-  year: "numeric",
-});
+import { PencilIcon, TrashIcon } from "lucide-react";
+import { Button } from "@/_components/ui/button";
 
 const categoryLabelMap: Record<Transaction["category"], string> = {
   HOUSING: "Moradia",
@@ -61,9 +52,9 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "category",
     header: "Categoria",
-    cell: ({ row }) => (
+    cell: ({ row: { original: transaction } }) => (
       <span className="text-slate-300">
-        {categoryLabelMap[row.original.category]}
+        {categoryLabelMap[transaction.category]}
       </span>
     ),
   },
@@ -79,31 +70,41 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "date",
     header: "Data",
-    cell: ({ row }) => {
-      const date = new Date(row.original.date);
+    cell: ({ row: { original: transaction } }) => {
+      const date = new Date(transaction.date).toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
 
-      return (
-        <span className="text-slate-300">{dateFormatter.format(date)}</span>
-      );
+      return <span className="text-slate-300">{date}</span>;
     },
   },
   {
     accessorKey: "amount",
     header: "Valor",
-    cell: ({ row }) => {
-      const amount = Number(row.original.amount);
-      const isExpense = row.original.type === "EXPENSE";
-
-      return (
-        <span
-          className={`font-semibold ${isExpense ? "text-rose-300" : "text-emerald-300"}`}
-        >
-          {currencyFormatter.format(amount)}
-        </span>
-      );
+    cell: ({ row: { original: transaction } }) => {
+      return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(Number(transaction.amount));
     },
   },
   {
     id: "actions",
+    header: "Ações",
+    cell: () => {
+      return (
+        <div className="space-x-1">
+          <Button variant="ghost" size="icon" className="hover:bg-slate-800">
+            <PencilIcon></PencilIcon>
+          </Button>
+
+          <Button variant="ghost" size="icon" className="hover:bg-slate-800">
+            <TrashIcon></TrashIcon>
+          </Button>
+        </div>
+      );
+    },
   },
 ];
