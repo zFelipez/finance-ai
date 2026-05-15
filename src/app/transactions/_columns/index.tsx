@@ -1,34 +1,27 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-
-import { TrancationTypeBadge } from "../_components/type-badge";
-import { Transaction } from "@prisma/client";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/_components/ui/button";
+import { TrancationTypeBadge } from "../_components/type-badge";
 
-const categoryLabelMap: Record<Transaction["category"], string> = {
-  HOUSING: "Moradia",
-  FOOD: "Alimentacao",
-  TRANSPORTATION: "Transporte",
-  ENTERTAINMENT: "Lazer",
-  UTILITY: "Contas",
-  HEALTH: "Saude",
-  SALARY: "Salario",
-  EDUCATION: "Educacao",
-  OTHER: "Outros",
+import {
+  TRANSACTION_CATEGORY_LABELS,
+  TRANSACTION_PAYMENT_METHOD_LABELS,
+} from "@/_constants/transactions";
+import { Transaction } from "@prisma/client";
+
+export type TransactionTableData = Omit<
+  Transaction,
+  "amount" | "date" | "createdAt" | "updatedAt"
+> & {
+  amount: number;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
-const paymentMethodLabelMap: Record<Transaction["paymentMethod"], string> = {
-  CASH: "Dinheiro",
-  CREDIT_CARD: "Cartao de credito",
-  DEBIT_CARD: "Cartao de debito",
-  BANK_TRANSFER: "Transferencia",
-  MOBILE_PAYMENT: "Pagamento movel",
-  OTHER: "Outro",
-};
-
-export const transactionColumns: ColumnDef<Transaction>[] = [
+export const transactionColumns: ColumnDef<TransactionTableData>[] = [
   {
     accessorKey: "name",
     header: "Nome",
@@ -54,16 +47,16 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     header: "Categoria",
     cell: ({ row: { original: transaction } }) => (
       <span className="text-slate-300">
-        {categoryLabelMap[transaction.category]}
+        {TRANSACTION_CATEGORY_LABELS[transaction.category]}
       </span>
     ),
   },
   {
     accessorKey: "paymentMethod",
     header: "Método de Pagamento",
-    cell: ({ row }) => (
+    cell: ({ row: { original: transaction } }) => (
       <span className="text-slate-300">
-        {paymentMethodLabelMap[row.original.paymentMethod]}
+        {TRANSACTION_PAYMENT_METHOD_LABELS[transaction.paymentMethod]}
       </span>
     ),
   },
