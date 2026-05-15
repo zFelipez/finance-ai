@@ -12,7 +12,11 @@ import {
 } from "./ui/dialog";
 import { Dialog } from "./ui/dialog";
 import { z } from "zod";
-import { TransactionType } from "@prisma/client";
+import {
+  TransactionCategory,
+  TransactionPaymentMethod,
+  TransactionType,
+} from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -39,33 +43,47 @@ import {
 } from "@/_constants/transactions";
 import { DatePickerDemo } from "./ui/date-picker";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { addTransaction } from "@/_actions/add-transaction";
+import React from "react";
 
 const formSchema = z.object({
-  name: z.string().trim().min(1, "O nome é obrigatório"),
-  amount: z.string().trim().min(1, "O valor deve ser positivo"),
-  type: z.nativeEnum(TransactionType, "O tipo é obrigatório"),
-  category: z.nativeEnum(TransactionType, "A categoria é obrigatória"),
+  name: z.string().trim().min(1, {
+    message: "O nome é obrigatório.",
+  }),
+  amount: z.number("O valor é obrigatório.").positive({
+    message: "O valor deve ser positivo.",
+  }),
+  type: z.nativeEnum(TransactionType, "O tipo é obrigatório."),
+  category: z.nativeEnum(TransactionCategory, "A categoria é obrigatória."),
   paymentMethod: z.nativeEnum(
-    TransactionType,
-    "O método de pagamento é obrigatório",
+    TransactionPaymentMethod,
+    "O método de pagamento é obrigatório.",
   ),
-  date: z.date("A data é obrigatória"),
+  date: z.date("A data é obrigatória."),
 });
 
 export type formSchemaType = z.infer<typeof formSchema>;
 
 export function AddTransactionButton() {
-  const onSubmit = (values: formSchemaType) => {
-    console.log(values);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const onSubmit = async (values: formSchemaType) => {
+    try {
+      await addTransaction(values);
+      setDialogOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error("Error adding transaction:", error);
+    }
   };
 
   const form = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      amount: "",
-      category: TransactionType.DEPOSIT,
-      paymentMethod: TransactionType.INVESTMENT,
+      amount: 50,
+      category: TransactionCategory.OTHER,
+      paymentMethod: TransactionPaymentMethod.OTHER,
       type: TransactionType.EXPENSE,
       date: new Date(),
     },
@@ -77,7 +95,9 @@ export function AddTransactionButton() {
         if (!open) {
           form.reset();
         }
+        setDialogOpen(open);
       }}
+      open={dialogOpen}
     >
       <DialogTrigger asChild>
         <Button className="rounded-full text-emerald-500 hover:bg-emerald-500/10">
@@ -120,7 +140,15 @@ export function AddTransactionButton() {
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <MoneyInput placeholder="Digite o valor..." {...field} />
+                    <MoneyInput
+                      placeholder="Digite o valor..."
+                      value={field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
