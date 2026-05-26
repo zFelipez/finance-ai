@@ -28,6 +28,18 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    getRowId: (originalRow, index) => {
+      if (
+        typeof originalRow === "object" &&
+        originalRow !== null &&
+        "id" in originalRow &&
+        typeof originalRow.id === "string"
+      ) {
+        return originalRow.id;
+      }
+
+      return index.toString();
+    },
     getCoreRowModel: getCoreRowModel(),
   });
 

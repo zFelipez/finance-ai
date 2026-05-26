@@ -39,8 +39,9 @@ import {
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { upsertTransaction } from "@/_actions/add-transaction";
+import { upsertTransaction } from "@/_actions/upsert-transaction";
 import { TransactionTableData } from "@/app/transactions/_columns";
+import { useEffect } from "react";
 
 interface UpsertTransactionDialogProps {
   dialogOpen: boolean;
@@ -68,6 +69,17 @@ const formSchema = z.object({
 
 export type formSchemaType = z.infer<typeof formSchema>;
 
+function getDefaultValues(transaction?: TransactionTableData): formSchemaType {
+  return {
+    name: transaction?.name || "",
+    amount: transaction?.amount || 50,
+    category: transaction?.category || TransactionCategory.OTHER,
+    paymentMethod: transaction?.paymentMethod || TransactionPaymentMethod.OTHER,
+    type: transaction?.type || TransactionType.EXPENSE,
+    date: transaction?.date ? new Date(transaction.date) : new Date(),
+  };
+}
+
 export function UpsertTransactionDialog({
   dialogOpen,
   setDialogOpen,
@@ -87,16 +99,16 @@ export function UpsertTransactionDialog({
 
   const form = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: transaction?.name || "",
-      amount: transaction?.amount || 50,
-      category: transaction?.category || TransactionCategory.OTHER,
-      paymentMethod:
-        transaction?.paymentMethod || TransactionPaymentMethod.OTHER,
-      type: transaction?.type || TransactionType.EXPENSE,
-      date: transaction?.date ? new Date(transaction.date) : new Date(),
-    },
+    defaultValues: getDefaultValues(transaction),
   });
+
+  useEffect(() => {
+    if (!dialogOpen) {
+      return;
+    }
+
+    form.reset(getDefaultValues(transaction));
+  }, [dialogOpen, form, transaction]);
 
   return (
     <Dialog

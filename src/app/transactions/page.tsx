@@ -3,9 +3,19 @@ import { db } from "@/_lib/prisma";
 import { transactionColumns, type TransactionTableData } from "./_columns";
 import { AddTransactionButton } from "@/_components/add-transaction-button";
 import Navbar from "@/_components/navbar";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export default async function TransactionsPage() {
-  const transactions = await db.transaction.findMany({});
+  const userLoggedIn = await auth();
+
+  if (!userLoggedIn.userId) {
+    redirect("/login");
+  }
+
+  const transactions = await db.transaction.findMany({
+    where: { userID: userLoggedIn.userId },
+  });
   const serializedTransactions: TransactionTableData[] = transactions.map(
     (transaction) => ({
       id: transaction.id,
