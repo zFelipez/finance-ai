@@ -2,6 +2,7 @@ import { DataTable } from "@/_components/ui/datatable";
 import { db } from "@/_lib/prisma";
 import { transactionColumns, type TransactionTableData } from "./_columns";
 import { AddTransactionButton } from "@/_components/add-transaction-button";
+import Navbar from "@/_components/navbar";
 
 export default async function TransactionsPage() {
   const transactions = await db.transaction.findMany({});
@@ -21,16 +22,19 @@ export default async function TransactionsPage() {
   );
 
   return (
-    <div className="min-h-full space-y-6 bg-slate-950/30 p-6">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-2xl text-slate-100">Transactions</h1>
-        <AddTransactionButton />
-      </div>
+    <>
+      <Navbar></Navbar>
+      <div className="min-h-full space-y-6 bg-slate-950/30 p-6">
+        <div className="flex w-full items-center justify-between">
+          <h1 className="text-2xl text-slate-100">Transactions</h1>
+          <AddTransactionButton />
+        </div>
 
-      <DataTable
-        data={serializedTransactions}
-        columns={transactionColumns}
-      ></DataTable>
-    </div>
+        <DataTable
+          data={serializedTransactions}
+          columns={transactionColumns}
+        ></DataTable>
+      </div>
+    </>
   );
 }
