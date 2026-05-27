@@ -36,7 +36,7 @@ export default async function TransactionsPage() {
       <Navbar></Navbar>
       <div className="min-h-full space-y-6 bg-slate-950/30 p-6">
         <div className="flex w-full items-center justify-between">
-          <h1 className="text-2xl text-slate-100">Transactions</h1>
+          <h1 className="text-2xl font-bold text-slate-100">Transactions</h1>
           <AddTransactionButton />
         </div>
 

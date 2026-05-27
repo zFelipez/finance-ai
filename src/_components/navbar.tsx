@@ -9,7 +9,7 @@ export default function Navbar() {
   const navigation = usePathname();
 
   return (
-    <nav className="flex w-full justify-between border-b border-solid px-8 py-4">
+    <nav className="sticky top-0 z-10 flex w-full justify-between border-b border-solid border-slate-500 bg-gray-900 px-8 py-4">
       <div className="flex items-center gap-10">
         <Image src="/finance-ai.svg" width={173} height={39} alt="finance ai" />
 
