@@ -8,6 +8,7 @@ import { TimeSelect } from "./_components/time-select";
 import { isMatch } from "date-fns";
 import { ChartPie } from "./_components/chart";
 import { getDashboardData } from "@/_dal/get-dashboard";
+import { ExpensesPerCategory } from "./_components/expenses-per-category";
 
 export default async function Home({
   searchParams: { month },
@@ -26,11 +27,16 @@ export default async function Home({
       redirect("?month=1");
     }
   }
-  const { receipt, expense, invested, typesPercentage } =
-    await getDashboardData({
-      month,
-      userID: userId,
-    });
+  const {
+    receipt,
+    expense,
+    invested,
+    typesPercentage,
+    totalExpensePerCategory,
+  } = await getDashboardData({
+    month,
+    userID: userId,
+  });
 
   return (
     <div className="min-h-full bg-slate-950/30">
@@ -42,19 +48,26 @@ export default async function Home({
       </div>
 
       <div className="grid grid-cols-[2fr,1fr]">
-        <SummaryCards
-          receipt={receipt}
-          expense={expense}
-          invested={invested}
-        ></SummaryCards>
-      </div>
-      <div className="grid grid-cols-[1fr,2fr] grid-rows-1 gap-6 px-6">
-        <ChartPie
-          invested={invested}
-          receipt={receipt}
-          expense={expense}
-          typesPercentage={typesPercentage}
-        ></ChartPie>
+        <div>
+          <SummaryCards
+            receipt={receipt}
+            expense={expense}
+            invested={invested}
+          ></SummaryCards>
+          <div className="grid grid-cols-2 gap-6 px-6">
+            <ChartPie
+              invested={invested}
+              receipt={receipt}
+              expense={expense}
+              typesPercentage={typesPercentage}
+            ></ChartPie>
+            <ExpensesPerCategory
+              totalExpensePerCategory={totalExpensePerCategory}
+            ></ExpensesPerCategory>
+          </div>
+        </div>
+
+        <div></div>
       </div>
     </div>
   );
