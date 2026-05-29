@@ -41,40 +41,35 @@ export default async function Home({
   });
 
   return (
-    <div className="min-h-full bg-slate-950/30">
-      <Navbar></Navbar>
-
-      <div className="flex items-center justify-between p-6">
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <TimeSelect month={month}></TimeSelect>
-      </div>
-
-      <div className="grid grid-cols-[2fr,1fr] gap-6 p-6">
-        <div>
-          <SummaryCards
-            receipt={receipt}
-            expense={expense}
-            invested={invested}
-          ></SummaryCards>
-          <div className="grid grid-cols-2 gap-6 py-6">
-            <ChartPie
-              invested={invested}
+    <>
+      <Navbar />
+      <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+          <TimeSelect month={month} />
+        </div>
+        <div className="grid h-full grid-cols-[2fr,1fr] gap-6 overflow-hidden">
+          <div className="flex flex-col gap-6 overflow-hidden">
+            <SummaryCards
               receipt={receipt}
               expense={expense}
-              typesPercentage={typesPercentage}
-            ></ChartPie>
-            <ExpensesPerCategory
-              totalExpensePerCategory={totalExpensePerCategory}
-            ></ExpensesPerCategory>
+              invested={invested}
+            />
+            <div className="grid h-full grid-cols-[1fr,2fr] grid-rows-1 gap-6 overflow-hidden">
+              <ChartPie
+                invested={invested}
+                receipt={receipt}
+                expense={expense}
+                typesPercentage={typesPercentage}
+              />
+              <ExpensesPerCategory
+                totalExpensePerCategory={totalExpensePerCategory}
+              />
+            </div>
           </div>
-        </div>
-
-        <div className="h-full min-h-0 overflow-hidden pb-6">
-          <LastTransactions
-            lastTransactions={lastTransactions}
-          ></LastTransactions>
+          <LastTransactions lastTransactions={lastTransactions} />
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -92,7 +92,7 @@ export async function getDashboardData({
     orderBy: {
       date: "desc",
     },
-    take: 10,
+    take: 30,
   });
 
   return {

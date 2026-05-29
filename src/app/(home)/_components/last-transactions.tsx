@@ -32,7 +32,7 @@ export function LastTransactions({
 
   return (
     <ScrollArea className="flex-1 overflow-auto rounded-md border border-slate-500 bg-gray-800">
-      <CardHeader className="flex-row items-center justify-between border-b border-slate-500">
+      <CardHeader className="sticky top-0 flex-row items-center justify-between border-b border-slate-500 bg-gray-800">
         <CardTitle className="font-bold text-white">
           {" "}
           Last Transactions
