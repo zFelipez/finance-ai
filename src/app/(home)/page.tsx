@@ -25,7 +25,7 @@ export default async function Home({
 
   if (monthisInvalid) {
     {
-      redirect("?month=1");
+      redirect(`/?month=${new Date().getMonth() + 1}`);
     }
   }
   const {
