@@ -25,7 +25,7 @@ export async function SummaryCards({
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <SummaryCard
         size="large"
         icon={<WalletIcon size={16} color="white" />}

@@ -9,6 +9,7 @@ import { isMatch } from "date-fns";
 import { ChartPie } from "./_components/chart";
 import { getDashboardData } from "@/_dal/get-dashboard";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
+import { LastTransactions } from "./_components/last-transactions";
 
 export default async function Home({
   searchParams: { month },
@@ -33,6 +34,7 @@ export default async function Home({
     invested,
     typesPercentage,
     totalExpensePerCategory,
+    lastTransactions,
   } = await getDashboardData({
     month,
     userID: userId,
@@ -47,14 +49,14 @@ export default async function Home({
         <TimeSelect month={month}></TimeSelect>
       </div>
 
-      <div className="grid grid-cols-[2fr,1fr]">
+      <div className="grid grid-cols-[2fr,1fr] gap-6 p-6">
         <div>
           <SummaryCards
             receipt={receipt}
             expense={expense}
             invested={invested}
           ></SummaryCards>
-          <div className="grid grid-cols-2 gap-6 px-6">
+          <div className="grid grid-cols-2 gap-6 py-6">
             <ChartPie
               invested={invested}
               receipt={receipt}
@@ -67,7 +69,11 @@ export default async function Home({
           </div>
         </div>
 
-        <div></div>
+        <div className="h-full min-h-0 overflow-hidden pb-6">
+          <LastTransactions
+            lastTransactions={lastTransactions}
+          ></LastTransactions>
+        </div>
       </div>
     </div>
   );

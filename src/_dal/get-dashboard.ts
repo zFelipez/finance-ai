@@ -83,11 +83,24 @@ export async function getDashboardData({
       expense,
     ),
   }));
+
+  const lastTransactions = await db.transaction.findMany({
+    where: {
+      ...dateWhere,
+      userID,
+    },
+    orderBy: {
+      date: "desc",
+    },
+    take: 10,
+  });
+
   return {
     receipt,
     expense,
     invested,
     typesPercentage,
     totalExpensePerCategory,
+    lastTransactions,
   };
 }
