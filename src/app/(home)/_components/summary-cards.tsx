@@ -7,6 +7,8 @@ import {
 import { SummaryCard } from "./summary-card";
 
 import { auth } from "@clerk/nextjs/server";
+import { getUserPlan } from "@/_dal/get-user-plan";
+import { getCurrentMonthTransactions } from "@/_dal/get-current-month-transactions";
 
 type SummaryCardsProps = {
   receipt: number;
@@ -24,6 +26,11 @@ export async function SummaryCards({
     throw new Error("User not authenticated");
   }
 
+  const currentMonthTransactions =
+    await getCurrentMonthTransactions(userLoggedIn);
+
+  const { hasPremiumPlan } = await getUserPlan(userLoggedIn.userId);
+
   return (
     <div className="space-y-6">
       <SummaryCard
@@ -31,6 +38,7 @@ export async function SummaryCards({
         icon={<WalletIcon size={16} color="white" />}
         title={"Saldo Atual"}
         amount={receipt - invested - expense}
+        canAddTransaction={!hasPremiumPlan && currentMonthTransactions >= 10}
       ></SummaryCard>
 
       <div className="grid grid-cols-3 gap-6">

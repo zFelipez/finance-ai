@@ -9,6 +9,8 @@ import {
   TransactionPaymentMethod,
   TransactionType,
 } from "@prisma/client";
+import { endOfMonth, startOfMonth } from "date-fns";
+import { getUserPlan } from "@/_dal/get-user-plan";
 
 type UpsertTransactionProps = {
   id?: string;
@@ -27,6 +29,24 @@ export async function upsertTransaction(data: UpsertTransactionProps) {
 
   if (!userLoggedIn.userId) {
     throw new Error("User not authenticated");
+  }
+
+  const { hasPremiumPlan } = await getUserPlan(userLoggedIn.userId);
+
+  if (!hasPremiumPlan) {
+    const transactionsCount = await db.transaction.count({
+      where: {
+        userID: userLoggedIn.userId,
+        createdAt: {
+          gte: startOfMonth(new Date()),
+          lte: endOfMonth(new Date()),
+        },
+      },
+    });
+
+    if (transactionsCount >= 10) {
+      throw new Error("MAX_TRANSACTIONS_REACHED");
+    }
   }
 
   await db.transaction.upsert({

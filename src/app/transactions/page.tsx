@@ -6,6 +6,8 @@ import Navbar from "@/_components/navbar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ScrollArea } from "@/_components/ui/scroll-area";
+import { getCurrentMonthTransactions } from "@/_dal/get-current-month-transactions";
+import { getUserPlan } from "@/_dal/get-user-plan";
 
 export default async function TransactionsPage() {
   const userLoggedIn = await auth();
@@ -17,6 +19,12 @@ export default async function TransactionsPage() {
   const transactions = await db.transaction.findMany({
     where: { userID: userLoggedIn.userId },
   });
+
+  const currentMonthTransactions =
+    await getCurrentMonthTransactions(userLoggedIn);
+
+  const { hasPremiumPlan } = await getUserPlan(userLoggedIn.userId);
+
   const serializedTransactions: TransactionTableData[] = transactions.map(
     (transaction) => ({
       id: transaction.id,
@@ -39,7 +47,9 @@ export default async function TransactionsPage() {
         {/* TÍTULO E BOTÃO */}
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Transações</h1>
-          <AddTransactionButton />
+          <AddTransactionButton
+            canAddTransaction={hasPremiumPlan || currentMonthTransactions < 10}
+          />
         </div>
         <ScrollArea>
           <DataTable

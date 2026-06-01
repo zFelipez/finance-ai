@@ -1,9 +1,11 @@
 import Navbar from "@/_components/navbar";
 import { Card, CardContent, CardHeader } from "@/_components/ui/card";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { CheckIcon, XIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { AcquirePlanButton } from "./_components/acquire-plan-button";
+import { getCurrentMonthTransactions } from "@/_dal/get-current-month-transactions";
+import { getUserPlan } from "@/_dal/get-user-plan";
 
 export default async function SubscriptionPage() {
   const userLoggedIn = await auth();
@@ -12,9 +14,10 @@ export default async function SubscriptionPage() {
     redirect("/login");
   }
 
-  const user = await clerkClient().users.getUser(userLoggedIn.userId);
+  const currentMonthTransactions =
+    await getCurrentMonthTransactions(userLoggedIn);
 
-  const hasPremiumPlan = user.publicMetadata.subscriptionPlan === "premium";
+  const { hasPremiumPlan } = await getUserPlan(userLoggedIn.userId);
 
   return (
     <div>
@@ -42,7 +45,7 @@ export default async function SubscriptionPage() {
                 <CheckIcon className="h-6 w-6 text-green-500" />
                 <p className="text-white">
                   {" "}
-                  Only 10 transactions per month (7/10)
+                  Only 10 transactions per month ({currentMonthTransactions}/10)
                 </p>
               </div>
 
