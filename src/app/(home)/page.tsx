@@ -10,6 +10,7 @@ import { ChartPie } from "./_components/chart";
 import { getDashboardData } from "@/_dal/get-dashboard";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { LastTransactions } from "./_components/last-transactions";
+import { AiReportButton } from "./_components/ai-report-button";
 
 export default async function Home({
   searchParams: { month },
@@ -46,7 +47,11 @@ export default async function Home({
       <div className="flex h-full flex-col space-y-6 overflow-hidden p-6">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <TimeSelect month={month} />
+
+          <div className="flex items-center gap-4">
+            <AiReportButton month={month} userId={userId}></AiReportButton>
+            <TimeSelect month={month} />
+          </div>
         </div>
         <div className="grid h-full grid-cols-[2fr,1fr] gap-6 overflow-hidden">
           <div className="flex flex-col gap-6 overflow-hidden">

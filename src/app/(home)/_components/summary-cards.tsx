@@ -38,7 +38,7 @@ export async function SummaryCards({
         icon={<WalletIcon size={16} color="white" />}
         title={"Saldo Atual"}
         amount={receipt - invested - expense}
-        canAddTransaction={!hasPremiumPlan && currentMonthTransactions >= 10}
+        canAddTransaction={hasPremiumPlan || currentMonthTransactions < 10}
       ></SummaryCard>
 
       <div className="grid grid-cols-3 gap-6">
