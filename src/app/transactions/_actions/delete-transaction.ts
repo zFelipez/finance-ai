@@ -3,11 +3,14 @@
 import { db } from "@/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { deleteTransactionSchema } from "./schema";
 
 export async function deleteTransaction(transactionId: string) {
   const { userId } = await auth();
 
-  if (!transactionId) {
+  const transactionIdParsed = deleteTransactionSchema.parse({ transactionId });
+
+  if (!transactionId || !transactionIdParsed.transactionId) {
     throw new Error("Transaction ID is required");
   }
 
