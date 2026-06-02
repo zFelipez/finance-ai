@@ -17,7 +17,7 @@ export async function generateAiReport({
     throw new Error("Unauthorized");
   }
 
-  const hasPremiumPlan = await getUserPlan(userId);
+  const { hasPremiumPlan } = await getUserPlan(userId);
 
   if (!hasPremiumPlan) {
     throw new Error("User does not have access to this feature");

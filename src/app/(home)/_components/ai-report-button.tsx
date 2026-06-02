@@ -21,9 +21,11 @@ import Markdown from "react-markdown";
 export function AiReportButton({
   month,
   userId,
+  hasPremiumPlan,
 }: {
   month: string;
   userId: string;
+  hasPremiumPlan: boolean;
 }) {
   const [report, setReport] = React.useState<string | null>(null);
   const [reportLoading, setReportLoading] = React.useState(false);
@@ -59,10 +61,15 @@ export function AiReportButton({
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="prose max-h-[450px] rounded-md p-4 prose-h3:text-white prose-h4:text-white prose-p:text-emerald-300 prose-strong:text-white prose-li:text-emerald-300">
-          <Markdown>{report}</Markdown>
-        </ScrollArea>
-
+        {hasPremiumPlan ? (
+          <ScrollArea className="prose max-h-[450px] rounded-md p-4 prose-h3:text-white prose-h4:text-white prose-p:text-emerald-300 prose-strong:text-white prose-li:text-emerald-300">
+            <Markdown>{report}</Markdown>
+          </ScrollArea>
+        ) : (
+          <p className="text-red-500">
+            You need a premium plan to access the AI report.
+          </p>
+        )}
         <DialogFooter>
           <DialogClose asChild>
             <Button className="bg-gray-700 text-white hover:bg-gray-600">
@@ -72,7 +79,7 @@ export function AiReportButton({
 
           <Button
             onClick={handleGenerateReport}
-            disabled={reportLoading}
+            disabled={reportLoading || !hasPremiumPlan}
             className="bg-emerald-500 text-white hover:bg-emerald-400"
           >
             {reportLoading ? (

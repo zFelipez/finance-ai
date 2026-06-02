@@ -11,6 +11,7 @@ import { getDashboardData } from "@/_dal/get-dashboard";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { LastTransactions } from "./_components/last-transactions";
 import { AiReportButton } from "./_components/ai-report-button";
+import { getUserPlan } from "@/_dal/get-user-plan";
 
 export default async function Home({
   searchParams: { month },
@@ -41,6 +42,10 @@ export default async function Home({
     userID: userId,
   });
 
+  const hasPremiumPlan = (await getUserPlan(userId)).hasPremiumPlan
+    ? true
+    : false;
+
   return (
     <>
       <Navbar />
@@ -49,7 +54,11 @@ export default async function Home({
           <h1 className="text-2xl font-bold text-white">Dashboard</h1>
 
           <div className="flex items-center gap-4">
-            <AiReportButton month={month} userId={userId}></AiReportButton>
+            <AiReportButton
+              month={month}
+              userId={userId}
+              hasPremiumPlan={hasPremiumPlan}
+            ></AiReportButton>
             <TimeSelect month={month} />
           </div>
         </div>
