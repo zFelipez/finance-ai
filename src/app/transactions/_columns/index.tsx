@@ -1,8 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TrashIcon } from "lucide-react";
-import { Button } from "@/_components/ui/button";
 import { TrancationTypeBadge } from "../_components/type-badge";
 
 import {
@@ -11,6 +9,7 @@ import {
 } from "@/_constants/transactions";
 import { Transaction } from "@prisma/client";
 import { EditTransactionButton } from "../_components/edit-transaction-button";
+import { DeleteTransactionButton } from "../_components/delete-transaction-button";
 
 export type TransactionTableData = Omit<
   Transaction,
@@ -94,9 +93,9 @@ export const transactionColumns: ColumnDef<TransactionTableData>[] = [
             transaction={transaction}
           ></EditTransactionButton>
 
-          <Button variant="ghost" size="icon" className="hover:bg-slate-800">
-            <TrashIcon></TrashIcon>
-          </Button>
+          <DeleteTransactionButton
+            transaction={transaction}
+          ></DeleteTransactionButton>
         </div>
       );
     },
