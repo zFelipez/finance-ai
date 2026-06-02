@@ -1,4 +1,4 @@
-'use client";';
+"use client";
 import { Button } from "@/_components/ui/button";
 import { TransactionTableData } from "../_columns";
 import { TrashIcon } from "lucide-react";
@@ -14,6 +14,7 @@ import {
   AlertDialogAction,
 } from "@/_components/ui/alert-dialog";
 import { deleteTransaction } from "../_actions/delete-transaction";
+import { toast } from "sonner";
 
 export function DeleteTransactionButton({
   transaction,
@@ -23,8 +24,11 @@ export function DeleteTransactionButton({
   async function handleDeleteClick() {
     try {
       await deleteTransaction(transaction.id);
+
+      toast.success("Transaction deleted successfully!");
     } catch (error) {
       console.error("Error deleting transaction:", error);
+      toast.error("Failed to delete transaction");
     }
   }
   return (
