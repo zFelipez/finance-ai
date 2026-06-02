@@ -3,9 +3,11 @@
 import { db } from "@/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { deleteTransactionSchema } from "./schema";
+import { deleteTransactionSchema, DeleteTransactionSchemaType } from "./schema";
 
-export async function deleteTransaction(transactionId: string) {
+export async function deleteTransaction(
+  transactionId: DeleteTransactionSchemaType["transactionId"],
+) {
   const { userId } = await auth();
 
   const transactionIdParsed = deleteTransactionSchema.parse({ transactionId });
