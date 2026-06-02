@@ -142,7 +142,7 @@ export const POST = async (request: Request) => {
         clerkUserId,
         customer,
         subscription: id,
-        subscriptionPlan: status === "active" ? "premium" : null,
+        subscriptionPlan: "premium",
       });
 
       break;
